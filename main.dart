@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -236,85 +238,559 @@ class MainMenu extends StatelessWidget {
     );
   }
 }
+class Import extends StatefulWidget {
+  
 
-class Import extends StatelessWidget {
+  @override
+  _Import createState() => _Import();
+}
+List<Offset>position = new List.filled(26, Offset(-100,-100));
+
+class _Import extends State<Import> {
+    final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    myController.dispose();
+    super.dispose();
+  }
+  String input;
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Import",
-      home: Scaffold(
-        body: Center(
-          child: Stack(
-            children: <Widget>[
-              Container(
-                constraints: BoxConstraints.expand(),
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage("assets/images/pixelCity.jpeg"),
-                      fit: BoxFit.cover),
-                ),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
-                  child: Container(
-                    color: Colors.black.withOpacity(0.0),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment(-0.5, -0.5),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Paste Import Link Here',
-                    labelStyle: TextStyle(
-                        color: Colors.white,
-                        fontFamily: "JosefinSans",
-                        fontSize: 20),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment(0.0, -0.3),
-                child: FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    'Process Link',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontFamily: 'JosefinSans',
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment(1.0, 1.0),
-                child: FlatButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    'Menu',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontFamily: 'JosefinSans',
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+    
+    return Scaffold(
+      body: Stack(
+        children: [
+        
+        Container(
+          constraints: BoxConstraints.expand(),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/images/pixelCity.jpeg"),
+                fit: BoxFit.cover),
+          ),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
+            child: Container(
+              color: Colors.black.withOpacity(0.0),
+            ),
           ),
         ),
+        Align(
+          alignment: Alignment(-0.5, -0.5),
+          child: Padding(
+            padding: EdgeInsets.all(20.0),
+            child: TextFormField(
+              controller: myController,
+              decoration: InputDecoration(
+                labelText: 'Paste Import Link Here',
+                labelStyle: TextStyle(
+                    color: Colors.white,
+                    fontFamily: "JosefinSans",
+                    fontSize: 20),
+              ),
+            ),
+          ),
+          
+          
+        ),
+        Align(
+          alignment: Alignment(0.0, -0.1),
+          child: FlatButton(
+            onPressed: () {
+              //Navigator.pop(context);
+               input = myController.text;
+                for(int i = 0; i<26; i++){
+                  int index = int.parse(input.substring(0,input.indexOf("/")));
+                  input = input.substring(input.indexOf(",")+1,input.length);
+                  double x = double.parse(input.substring(0,input.indexOf(",")));
+                  input = input.substring(input.indexOf(",")+1,input.length);
+                  double y = double.parse(input.substring(0,input.indexOf(",")));
+                  input = input.substring(input.indexOf(",")+1,input.length);
+                  if(!(y<=100)){
+                    position[index] = Offset(x, y);
+                  }
+                  
+                }
+                Navigator.push(
+                    context, 
+                    PageTransition(
+                      type: PageTransitionType.fade, 
+                      duration: Duration(seconds: 1),
+                      child: Display(),
+                    ),
+                  );
+            },
+            child: Text(
+              'Process Link',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontFamily: 'JosefinSans',
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment(1.0, 1.0),
+          child: FlatButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              'Menu',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontFamily: 'JosefinSans',
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+        ),
+        
+        ]
       ),
     );
   }
 }
-
+class Display extends StatelessWidget {
+  final width = 100.0, height = 100.0;
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+        Container(
+            constraints: BoxConstraints.expand(),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("assets/images/pixelCity.jpeg"),
+                  fit: BoxFit.cover),
+            ),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
+              child: Container(
+                color: Colors.black.withOpacity(0.0),
+              ),
+            ),
+          ),
+        Positioned(
+            top: 210,
+            child: Container(
+              color: Colors.grey[300].withOpacity(0.53),
+              width: 2000,
+              height: 300,
+              
+            ),
+          ),
+        Positioned(
+          left: position[0].dx,
+          top: position[0].dy,
+          child: Container(
+            width: width,
+            height: height,
+            
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/buildingbrown.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[1].dx,
+          top: position[1].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/buildingred.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[2].dx,
+          top: position[2].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/doorsideways.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[3].dx,
+          top: position[3].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/sidewalk.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[4].dx,
+          top: position[4].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/sidewalkabove.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[5].dx,
+          top: position[5].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/wooddoor.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[6].dx,
+          top: position[6].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/woodfloor.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[7].dx,
+          top: position[7].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/woodfloorsmall.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[8].dx,
+          top: position[8].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/stairs.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[9].dx,
+          top: position[9].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/arrowup.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),Positioned(
+          left: position[10].dx,
+          top: position[10].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/arrowdown.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),Positioned(
+          left: position[11].dx,
+          top: position[11].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/arrowleft.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),Positioned(
+          left: position[12].dx,
+          top: position[12].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/arrowright.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),Positioned(
+          left: position[13].dx,
+          top: position[13].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/buildingbrown.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[14].dx,
+          top: position[14].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/buildingred.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[15].dx,
+          top: position[15].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/doorsideways.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[16].dx,
+          top: position[16].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/sidewalk.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[17].dx,
+          top: position[17].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/sidewalkabove.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[18].dx,
+          top: position[18].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/wooddoor.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[19].dx,
+          top: position[19].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/woodfloor.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[20].dx,
+          top: position[20].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/woodfloorsmall.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[21].dx,
+          top: position[21].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/stairs.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[22].dx,
+          top: position[22].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/arrowup.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),Positioned(
+          left: position[23].dx,
+          top: position[23].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/arrowdown.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),Positioned(
+          left: position[24].dx,
+          top: position[24].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/arrowleft.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          left: position[25].dx,
+          top: position[25].dy,
+          child: Container(
+            width: width,
+            height: height,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                    '../assets/arrowright.png'),
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment(1.0, 1.0),
+          child: FlatButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text(
+              'Back',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontFamily: 'JosefinSans',
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+        ),
+        ]
+      ),
+    );
+  }
+}
 //user sign up menu
 class SignInPage extends StatefulWidget {
   @override
@@ -342,7 +818,7 @@ class _SignInPageState extends State<SignInPage> {
                       fit: BoxFit.cover),
                 ),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
+                  filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
                   child: Container(
                     color: Colors.black.withOpacity(0.0),
                   ),
@@ -396,7 +872,7 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                     Align(
                       child: FormBuilderTextField(
-                        attribute: "password",
+                        attribute: "Password",
                         validators: [
                           FormBuilderValidators.minLength(5),
                           FormBuilderValidators.required(),
@@ -422,8 +898,19 @@ class _SignInPageState extends State<SignInPage> {
                     // Validate returns true if the form is valid, otherwise false.
                     if (_fbbKey.currentState.saveAndValidate()) {
                       print(_fbbKey.currentState.value);
-                      var exEmail = "gpb@gmail.com";
+                      var exEmail = "gpb@gatech.edu";
                       var exPassword = "hackgttime";
+                      var inEmail = _fbbKey.currentState.value['Email'];
+                      var inPassword = _fbbKey.currentState.value['Password'];
+
+                      if (exEmail == inEmail && exPassword == inPassword) {
+                      Navigator.push(
+                          context,
+                          PageTransition(
+                              type: PageTransitionType.fade,
+                              duration: Duration(seconds: 1),
+                              child: Profile()));
+                      }
                     }
                   },
                   child: Text(
@@ -507,7 +994,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   fit: BoxFit.cover),
             ),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0),
+              filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
               child: Container(
                 color: Colors.black.withOpacity(0.0),
               ),
@@ -1020,25 +1507,37 @@ class Envision extends StatefulWidget {
 }
 
 class _Envision extends State<Envision> {
+
+
   double width = 100.0, height = 100.0;
-  Offset position;
-  Offset position2;
-  Offset position3;
-  Offset position4;
-  Offset position5;
-  Offset position6;
-  Offset position7;
-  Offset position8;
-  Offset position9;
-  Offset position10;
+  Offset position ;
+  Offset position2 ;
+  Offset position3 ;
+  Offset position4 ;
+  Offset position5 ;
+  Offset position6 ;
+  Offset position7 ;
+  Offset position8 ;
+  Offset position9 ;
+  Offset position10 ;
   Offset position11;
-  Offset position12;
-  Offset position13;
-  Offset position14;
-  Offset position15;
-  Offset position16;
-  Offset position17;
-  Offset position18;
+  Offset position12 ;
+  Offset position13 ;
+  Offset position14 ;
+  Offset position15 ;
+  Offset position16 ;
+  Offset position17 ;
+  Offset position18 ;
+  Offset position19 ;
+  Offset position20 ;
+  Offset position21 ;
+  Offset position22 ;
+  Offset position23 ;
+  Offset position24 ;
+  Offset position25 ;
+  Offset position26 ;
+
+  
 
   @override
   void initState() {
@@ -1052,71 +1551,107 @@ class _Envision extends State<Envision> {
     // position7 = Offset(3*width/5, height + 100);
     // position8 = Offset(4*width/5, height + 100);
     // position9 = Offset(4*width/5, height + 100);
-    position = Offset(30, height - 20);
-    position2 = Offset(140, height - 20);
-    position3 = Offset(250, height - 20);
-    position4 = Offset(360, height - 20);
-    position5 = Offset(470, height - 20);
-    position6 = Offset(30, height + 60);
-    position7 = Offset(140, height + 60);
-    position8 = Offset(250, height + 60);
-    position9 = Offset(360, height + 60);
+    position = Offset(30, height-80);
+    position2 = Offset(140, height-80);
+    position3 = Offset(250, height-80);
+    position4 = Offset(360, height-80);
+    position5 = Offset(470, height-80);
+    position6 = Offset(580, height-80);
+    position7 = Offset(30, height);
+    position8 = Offset(140, height);
+    position9 = Offset(250, height);
+    position10 = Offset(360, height);
+    position11 = Offset(470, height);
+    position12 = Offset(580, height);
+    position13 = Offset(690, height);
 
-    position10 = Offset(30, height - 20);
-    position11 = Offset(140, height - 20);
-    position12 = Offset(250, height - 20);
-    position13 = Offset(360, height - 20);
-    position14 = Offset(470, height - 20);
-    position15 = Offset(30, height + 60);
-    position16 = Offset(140, height + 60);
-    position17 = Offset(250, height + 60);
-    position18 = Offset(360, height + 60);
+    position14 = Offset(30, height-80);
+    position15 = Offset(140, height-80);
+    position16 = Offset(250, height-80);
+    position17 = Offset(360, height-80);
+    position18 = Offset(470, height-80);
+    position19 = Offset(580, height-80);
+    position20 = Offset(30, height);
+    position21 = Offset(140, height);
+    position22 = Offset(250, height);
+    position23 = Offset(360, height);
+    position24 = Offset(470, height);
+    position25 = Offset(580, height);
+    position26 = Offset(690, height);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body:Stack(
+
         children: <Widget>[
+          Container(
+            constraints: BoxConstraints.expand(),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("assets/images/pixelCity.jpeg"),
+                  fit: BoxFit.cover),
+            ),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
+              child: Container(
+                color: Colors.black.withOpacity(0.0),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 210,
+            child: Container(
+              color: Colors.grey[300].withOpacity(0.53),
+              width: 2000,
+              height: 300,
+              
+            ),
+          ),
           Positioned(
             left: position.dx,
-            top: position.dy - height + 45,
+            top: position.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/buildingbrown.jpg'),
+                    image: AssetImage(
+                        '../assets/buildingbrown.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
               ),
               feedback: Container(
+               
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/buildingbrown.jpg'),
+                    image: AssetImage(
+                        '../assets/buildingbrown.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position = offset);
               },
             ),
           ),
           Positioned(
             left: position2.dx,
-            top: position2.dy - height + 45,
+            top: position2.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/buildingred.jpg'),
+                    image: AssetImage(
+                        '../assets/buildingred.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1124,28 +1659,30 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/buildingred.jpg'),
+                    image: AssetImage(
+                        '../assets/buildingred.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position2 = offset);
               },
             ),
           ),
           Positioned(
             left: position3.dx,
-            top: position3.dy - height + 45,
+            top: position3.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/doorsideways.jpg'),
+                    image: AssetImage(
+                        '../assets/doorsideways.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1153,28 +1690,30 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/doorsideways.jpg'),
+                    image: AssetImage(
+                        '../assets/doorsideways.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position3 = offset);
               },
             ),
           ),
           Positioned(
             left: position4.dx,
-            top: position4.dy - height + 45,
+            top: position4.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/sidewalk.jpg'),
+                    image: AssetImage(
+                        '../assets/sidewalk.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1182,28 +1721,30 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/sidewalk.jpg'),
+                    image: AssetImage(
+                        '../assets/sidewalk.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position4 = offset);
               },
             ),
           ),
           Positioned(
             left: position5.dx,
-            top: position5.dy - height + 45,
+            top: position5.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/sidewalkabove.jpg'),
+                    image: AssetImage(
+                        '../assets/sidewalkabove.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1211,28 +1752,30 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/sidewalkabove.jpg'),
+                    image: AssetImage(
+                        '../assets/sidewalkabove.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position5 = offset);
               },
             ),
           ),
           Positioned(
             left: position6.dx,
-            top: position6.dy - height + 45,
+            top: position6.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/wooddoor.jpg'),
+                    image: AssetImage(
+                        '../assets/wooddoor.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1240,28 +1783,30 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/wooddoor.jpg'),
+                    image: AssetImage(
+                        '../assets/wooddoor.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position6 = offset);
               },
             ),
           ),
           Positioned(
             left: position7.dx,
-            top: position7.dy - height + 45,
+            top: position7.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/woodfloor.jpg'),
+                    image: AssetImage(
+                        '../assets/woodfloor.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1269,28 +1814,30 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/woodfloor.jpg'),
+                    image: AssetImage(
+                        '../assets/woodfloor.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position7 = offset);
               },
             ),
           ),
           Positioned(
             left: position8.dx,
-            top: position8.dy - height + 45,
+            top: position8.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/woodfloorlarge.jpg'),
+                    image: AssetImage(
+                        '../assets/woodfloorsmall.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1298,28 +1845,30 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/woodfloorlarge.jpg'),
+                    image: AssetImage(
+                        '../assets/woodfloorsmall.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position8 = offset);
               },
             ),
           ),
           Positioned(
             left: position9.dx,
-            top: position9.dy - height + 45,
+            top: position9.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/woodstairs.jpg'),
+                    image: AssetImage(
+                        '../assets/stairs.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1327,29 +1876,30 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/woodstairs.jpg'),
+                    image: AssetImage(
+                        '../assets/stairs.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position9 = offset);
               },
             ),
           ),
-          /////////repeat///////////////////////////////////////////////////////////////
           Positioned(
             left: position10.dx,
-            top: position10.dy - height + 45,
+            top: position10.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/buildingbrown.jpg'),
+                    image: AssetImage(
+                        '../assets/arrowup.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1357,28 +1907,30 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/buildingbrown.jpg'),
+                    image: AssetImage(
+                        '../assets/arrowup.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position10 = offset);
               },
             ),
           ),
           Positioned(
             left: position11.dx,
-            top: position11.dy - height + 45,
+            top: position11.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/buildingred.jpg'),
+                    image: AssetImage(
+                        '../assets/arrowdown.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1386,28 +1938,30 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/buildingred.jpg'),
+                    image: AssetImage(
+                        '../assets/arrowdown.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position11 = offset);
               },
             ),
           ),
           Positioned(
             left: position12.dx,
-            top: position12.dy - height + 45,
+            top: position12.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/doorsideways.jpg'),
+                    image: AssetImage(
+                        '../assets/arrowleft.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1415,28 +1969,30 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/doorsideways.jpg'),
+                    image: AssetImage(
+                        '../assets/arrowleft.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position12 = offset);
               },
             ),
           ),
           Positioned(
             left: position13.dx,
-            top: position13.dy - height + 45,
+            top: position13.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/sidewalk.jpg'),
+                    image: AssetImage(
+                        '../assets/arrowright.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1444,57 +2000,63 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/sidewalk.jpg'),
+                    image: AssetImage(
+                        '../assets/arrowright.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position13 = offset);
               },
             ),
           ),
+          /////////repeat///////////////////////////////////////////////////////////////
           Positioned(
             left: position14.dx,
-            top: position14.dy - height + 45,
+            top: position14.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/sidewalkabove.jpg'),
+                    image: AssetImage(
+                        '../assets/buildingbrown.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
               ),
               feedback: Container(
+               
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/sidewalkabove.jpg'),
+                    image: AssetImage(
+                        '../assets/buildingbrown.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position14 = offset);
               },
             ),
           ),
           Positioned(
             left: position15.dx,
-            top: position15.dy - height + 45,
+            top: position15.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/wooddoor.jpg'),
+                    image: AssetImage(
+                        '../assets/buildingred.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1502,28 +2064,30 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/wooddoor.jpg'),
+                    image: AssetImage(
+                        '../assets/buildingred.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position15 = offset);
               },
             ),
           ),
           Positioned(
             left: position16.dx,
-            top: position16.dy - height + 45,
+            top: position16.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/woodfloor.jpg'),
+                    image: AssetImage(
+                        '../assets/doorsideways.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1531,28 +2095,30 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/woodfloor.jpg'),
+                    image: AssetImage(
+                        '../assets/doorsideways.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position16 = offset);
               },
             ),
           ),
           Positioned(
             left: position17.dx,
-            top: position17.dy - height + 45,
+            top: position17.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/woodfloorlarge.jpg'),
+                    image: AssetImage(
+                        '../assets/sidewalk.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1560,28 +2126,30 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/woodfloorlarge.jpg'),
+                    image: AssetImage(
+                        '../assets/sidewalk.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position17 = offset);
               },
             ),
           ),
           Positioned(
             left: position18.dx,
-            top: position18.dy - height + 45,
+            top: position18.dy,
             child: Draggable(
               child: Container(
                 width: width,
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/woodstairs.jpg'),
+                    image: AssetImage(
+                        '../assets/sidewalkabove.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -1589,92 +2157,332 @@ class _Envision extends State<Envision> {
               feedback: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('../assets/woodstairs.jpg'),
+                    image: AssetImage(
+                        '../assets/sidewalkabove.png'),
                     fit: BoxFit.fill,
                   ),
                 ),
                 width: width,
                 height: height,
               ),
-              onDraggableCanceled: (Velocity velocity, Offset offset) {
+              onDraggableCanceled: (Velocity velocity, Offset offset){
                 setState(() => position18 = offset);
               },
             ),
           ),
-          Center(
-            child: SelectableText("Data: " +
-                position.dx.toString() +
-                "," +
-                position.dy.toString() +
-                "," +
-                position2.dx.toString() +
-                "," +
-                position2.dy.toString() +
-                "," +
-                position3.dx.toString() +
-                "," +
-                position3.dy.toString() +
-                "," +
-                position4.dx.toString() +
-                "," +
-                position4.dy.toString() +
-                "," +
-                position5.dx.toString() +
-                "," +
-                position5.dy.toString() +
-                "," +
-                position6.dx.toString() +
-                "," +
-                position6.dy.toString() +
-                "," +
-                position7.dx.toString() +
-                "," +
-                position7.dy.toString() +
-                "," +
-                position8.dx.toString() +
-                "," +
-                position8.dy.toString() +
-                "," +
-                position9.dx.toString() +
-                "," +
-                position9.dy.toString() +
-                "," +
-                position10.dx.toString() +
-                "," +
-                position10.dy.toString() +
-                "," +
-                position11.dx.toString() +
-                "," +
-                position11.dy.toString() +
-                "," +
-                position12.dx.toString() +
-                "," +
-                position12.dy.toString() +
-                "," +
-                position13.dx.toString() +
-                "," +
-                position13.dy.toString() +
-                "," +
-                position14.dx.toString() +
-                "," +
-                position14.dy.toString() +
-                "," +
-                position15.dx.toString() +
-                "," +
-                position15.dy.toString() +
-                "," +
-                position16.dx.toString() +
-                "," +
-                position16.dy.toString() +
-                "," +
-                position17.dx.toString() +
-                "," +
-                position17.dy.toString() +
-                "," +
-                position18.dx.toString() +
-                "," +
-                position18.dy.toString() +
-                ","),
+          Positioned(
+            left: position19.dx,
+            top: position19.dy,
+            child: Draggable(
+              child: Container(
+                width: width,
+                height: height,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/wooddoor.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              feedback: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/wooddoor.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                width: width,
+                height: height,
+              ),
+              onDraggableCanceled: (Velocity velocity, Offset offset){
+                setState(() => position19 = offset);
+              },
+            ),
+          ),
+          Positioned(
+            left: position20.dx,
+            top: position20.dy,
+            child: Draggable(
+              child: Container(
+                width: width,
+                height: height,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/woodfloor.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              feedback: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/woodfloor.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                width: width,
+                height: height,
+              ),
+              onDraggableCanceled: (Velocity velocity, Offset offset){
+                setState(() => position20 = offset);
+              },
+            ),
+          ),
+          Positioned(
+            left: position21.dx,
+            top: position21.dy,
+            child: Draggable(
+              child: Container(
+                width: width,
+                height: height,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/woodfloorsmall.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              feedback: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/woodfloorsmall.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                width: width,
+                height: height,
+              ),
+              onDraggableCanceled: (Velocity velocity, Offset offset){
+                setState(() => position21 = offset);
+              },
+            ),
+          ),
+          Positioned(
+            left: position22.dx,
+            top: position22.dy,
+            child: Draggable(
+              child: Container(
+                width: width,
+                height: height,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/stairs.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              feedback: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/stairs.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                width: width,
+                height: height,
+              ),
+              onDraggableCanceled: (Velocity velocity, Offset offset){
+                setState(() => position22 = offset);
+              },
+            ),
+          ),
+          Positioned(
+            left: position23.dx,
+            top: position23.dy,
+            child: Draggable(
+              child: Container(
+                width: width,
+                height: height,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/arrowup.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              feedback: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/arrowup.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                width: width,
+                height: height,
+              ),
+              onDraggableCanceled: (Velocity velocity, Offset offset){
+                setState(() => position23 = offset);
+              },
+            ),
+          ),
+          Positioned(
+            left: position24.dx,
+            top: position24.dy,
+            child: Draggable(
+              child: Container(
+                width: width,
+                height: height,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/arrowdown.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              feedback: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/arrowdown.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                width: width,
+                height: height,
+              ),
+              onDraggableCanceled: (Velocity velocity, Offset offset){
+                setState(() => position24 = offset);
+              },
+            ),
+          ),
+          Positioned(
+            left: position25.dx,
+            top: position25.dy,
+            child: Draggable(
+              child: Container(
+                width: width,
+                height: height,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/arrowleft.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              feedback: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/arrowleft.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                width: width,
+                height: height,
+              ),
+              onDraggableCanceled: (Velocity velocity, Offset offset){
+                setState(() => position25 = offset);
+              },
+            ),
+          ),
+          Positioned(
+            left: position26.dx,
+            top: position26.dy,
+            child: Draggable(
+              child: Container(
+                width: width,
+                height: height,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/arrowright.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+              ),
+              feedback: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                        '../assets/arrowright.png'),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                width: width,
+                height: height,
+              ),
+              onDraggableCanceled: (Velocity velocity, Offset offset){
+                setState(() => position26 = offset);
+              },
+            ),
+          ),
+
+          
+          Positioned.fill(
+            //bottom: 10,
+            child: Padding(
+              padding:EdgeInsets.all(20.0),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child:Container(
+                width: 200,
+                child: ElevatedButton(
+                  
+                  child: Text('Copy Share Code',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontFamily: 'JosefinSans',
+                      fontStyle: FontStyle.italic,
+                    ),
+                ),
+                  onPressed: () {
+                    print("pressed");
+                    Clipboard.setData(new ClipboardData(text:
+                      "0/,"+position.dx.toString() +","+ position.dy.toString()+
+                      ",1/,"+position2.dx.toString() +","+ position2.dy.toString() +
+                      ",2/,"+ position3.dx.toString() +","+ position3.dy.toString() +
+                      ",3/,"+ position4.dx.toString() +","+ position4.dy.toString() +
+                      ",4/,"+ position5.dx.toString() +","+ position5.dy.toString() +
+                      ",5/,"+ position6.dx.toString() +","+ position6.dy.toString() +
+                      ",6/,"+ position7.dx.toString() +","+ position7.dy.toString() +
+                      ",7/,"+ position8.dx.toString() +","+ position8.dy.toString() +
+                      ",8/,"+ position9.dx.toString() +","+ position9.dy.toString() +
+                      ",9/,"+ position10.dx.toString() +","+ position10.dy.toString() +
+                      ",10/,"+ position11.dx.toString() +","+ position11.dy.toString() +
+                      ",11/,"+ position12.dx.toString() +","+ position12.dy.toString() +
+                      ",12/,"+ position13.dx.toString() +","+ position13.dy.toString() +
+                      ",13/,"+ position14.dx.toString() +","+ position14.dy.toString() +
+                      ",14/,"+ position15.dx.toString() +","+ position15.dy.toString() +
+                      ",15/,"+ position16.dx.toString() +","+ position16.dy.toString() +
+                      ",16/,"+ position17.dx.toString() +","+ position17.dy.toString() +
+                      ",17/,"+ position18.dx.toString() +","+ position18.dy.toString() +
+                      ",18/,"+ position19.dx.toString() +","+ position19.dy.toString() +
+                      ",19/,"+ position20.dx.toString() +","+ position20.dy.toString() +
+                      ",20/,"+ position21.dx.toString() +","+ position21.dy.toString() +
+                      ",21/,"+ position22.dx.toString() +","+ position22.dy.toString() +
+                      ",22/,"+ position23.dx.toString() +","+ position23.dy.toString() +
+                      ",23/,"+ position24.dx.toString() +","+ position24.dy.toString() +
+                      ",24/,"+ position25.dx.toString() +","+ position25.dy.toString() +
+                      ",25/,"+ position26.dx.toString() +","+ position26.dy.toString() + ","
+                    ));
+                    return showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          // Retrieve the text the that user has entered by using the
+                          // TextEditingController.
+                          content: Text("Share code copied to clipboard!"),
+                        );
+                      },
+                    );
+                  },
+                ), 
+              )
+            )
+            )
           ),
           Align(
             alignment: Alignment(1.0, 1.0),
@@ -1683,9 +2491,263 @@ class _Envision extends State<Envision> {
                 Navigator.pop(context);
               },
               child: Text(
-                'Back',
+                'Menu',
                 style: TextStyle(
-                  color: Colors.black,
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontFamily: 'JosefinSans',
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ),
+          ),
+        ],
+        
+      ),
+    );
+    
+  }
+
+  
+}
+
+// ignore: must_be_immutable
+class Profile extends StatelessWidget {
+  double _sigmaX = 2.0;
+  double _sigmaY = 2.0;
+  double _opacity = 0.1;
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Center(
+      child: Stack(
+        children: <Widget>[
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/pixelCity.jpeg'),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: _sigmaX, sigmaY: _sigmaY),
+              child: Container(
+                color: Colors.black.withOpacity(_opacity),
+              ),
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            height: 250.0,
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("Welcome, George",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: "JosefinSans",
+                        fontStyle: FontStyle.italic,
+                        fontSize: 35.0,
+                        color: Colors.white,
+                      )),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 30.0, horizontal: 16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    "Recents",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: "JosefinSans",
+                      fontStyle: FontStyle.italic,
+                      fontSize: 28.0,
+                    ),
+                  ),
+                  Card(
+                    elevation: 4.0,
+                    margin: const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 16.0),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0)),
+                    child: Column(
+                      children: <Widget>[
+                        ListTile(
+                          leading: Icon(
+                            Icons.location_city_sharp,
+                            color: Colors.deepOrangeAccent,
+                          ),
+                          title: Text("Tech Tower",
+                              style: TextStyle(
+                                fontFamily: "JosefinSans",
+                                fontStyle: FontStyle.italic,
+                              )),
+                          trailing: Icon(Icons.keyboard_arrow_right),
+                          onTap: () {
+                            //open change password
+                          },
+                        ),
+                        buildDivider(),
+                        ListTile(
+                          leading: Icon(
+                            Icons.roofing_outlined,
+                            color: Colors.deepOrangeAccent,
+                          ),
+                          title: Text("Treehouse Hideaway",
+                              style: TextStyle(
+                                fontFamily: "JosefinSans",
+                                fontStyle: FontStyle.italic,
+                              )),
+                          trailing: Icon(Icons.keyboard_arrow_right),
+                          onTap: () {
+                            //open change location
+                          },
+                        ),
+                        buildDivider(),
+                        ListTile(
+                          leading: Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.deepOrangeAccent,
+                          ),
+                          title: Text("Sideways Cafe",
+                              style: TextStyle(
+                                fontFamily: "JosefinSans",
+                                fontStyle: FontStyle.italic,
+                              )),
+                          trailing: Icon(Icons.keyboard_arrow_right),
+                          onTap: () {
+                            //open change location
+                          },
+                        ),
+                        buildDivider(),
+                        ListTile(
+                          leading: Icon(
+                            Icons.train,
+                            color: Colors.deepOrangeAccent,
+                          ),
+                          title: Text("Train Station",
+                              style: TextStyle(
+                                fontFamily: "JosefinSans",
+                                fontStyle: FontStyle.italic,
+                              )),
+                          trailing: Icon(Icons.keyboard_arrow_right),
+                          onTap: () {
+                            //open change location
+                          },
+                        ),
+                        buildDivider(),
+                        ListTile(
+                          leading: Icon(
+                            Icons.store_outlined,
+                            color: Colors.deepOrangeAccent,
+                          ),
+                          title: Text("Grocery Store",
+                              style: TextStyle(
+                                fontFamily: "JosefinSans",
+                                fontStyle: FontStyle.italic,
+                              )),
+                          trailing: Icon(Icons.keyboard_arrow_right),
+                          onTap: () {
+                            //open change location
+                          },
+                        ),
+                        buildDivider(),
+                        ListTile(
+                          leading: Icon(
+                            Icons.sports_football,
+                            color: Colors.deepOrangeAccent,
+                          ),
+                          title: Text("Bobby Dodd Stadium",
+                              style: TextStyle(
+                                fontFamily: "JosefinSans",
+                                fontStyle: FontStyle.italic,
+                              )),
+                          trailing: Icon(Icons.keyboard_arrow_right),
+                          onTap: () {
+                            //open change location
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment(0.0, 0.8),
+            child: Container(
+              width: 300.00,
+              child: RaisedButton(
+                onPressed: () {},
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(80.0),
+                ),
+                elevation: 0.0,
+                padding: EdgeInsets.all(0.0),
+                child: Ink(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerRight,
+                      end: Alignment.centerLeft,
+                      colors: [Colors.redAccent, Colors.pinkAccent],
+                    ),
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  child: Container(
+                      constraints:
+                          BoxConstraints(maxWidth: 300.0, maxHeight: 50.0),
+                      alignment: Alignment.center,
+                      child: FlatButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.fade,
+                              duration: Duration(seconds: 1),
+                              child: Envision(),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Create New",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "JosefinSans",
+                            fontStyle: FontStyle.italic,
+                            fontSize: 26.0,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                      )),
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment(1.0, 1.0),
+            child: FlatButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  PageTransition(
+                    type: PageTransitionType.fade,
+                    duration: Duration(seconds: 1),
+                    child: MainMenu(),
+                  ),
+                );
+              },
+              child: Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
                   fontSize: 20,
                   fontFamily: 'JosefinSans',
                   fontStyle: FontStyle.italic,
@@ -1695,6 +2757,15 @@ class _Envision extends State<Envision> {
           ),
         ],
       ),
+    ));
+  }
+
+  Container buildDivider() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8.0),
+      width: double.infinity,
+      height: 1.0,
+      color: Colors.grey.shade400,
     );
   }
 }
